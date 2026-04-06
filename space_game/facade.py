@@ -1,7 +1,5 @@
 import os
 
-from pydantic import BaseModel
-
 from space_game.lang import LANG
 from space_game.location import create_galaxy
 from space_game.game import SpaceGame
@@ -43,12 +41,3 @@ def execute_command(game_id: str, command: str) -> GameData:
             cmd.callback()
             break
     return _get_game_data(game_id, game)
-    
-
-
-
-
-
-
-
-
