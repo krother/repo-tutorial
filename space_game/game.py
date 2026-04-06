@@ -1,9 +1,10 @@
-from space_game.lang import TEXT
-from pydantic import BaseModel
-from typing import Any, Callable, Generator, Literal
-from space_game.logging_util import logger
-from space_game.location import Location
 from functools import partial
+from typing import Callable, Literal
+
+from pydantic import BaseModel
+
+from space_game.lang import TEXT
+from space_game.location import Location
 
 
 TRANSITIONS = {
@@ -14,9 +15,7 @@ TRANSITIONS = {
     ("surface", "planet"): TEXT["back to orbit of"],
 }
 
-CrewMember = Literal[
-    "panda", "elephant", "hamster", "python", "pingu", "unicorn"
-]
+CrewMember = Literal["panda", "elephant", "hamster", "python", "pingu", "unicorn"]
 
 
 class Command(BaseModel):
@@ -29,10 +28,6 @@ class Command(BaseModel):
 
     name: str
     callback: Callable
-
-    def execute(self):
-        logger.info(f"exceuting command '{self.name}'")
-        self.callback()
 
 
 class SpaceGame(BaseModel):
@@ -48,7 +43,8 @@ class SpaceGame(BaseModel):
     @property
     def solved(self) -> bool:
         """True when the game is finished"""
-        return self.location.name == "Rainbow portal"
+        location = self.location
+        return location.name == "Rainbow portal"
 
     def move_to(self, location: Location) -> None:
         """Callback function for move commands"""
@@ -60,38 +56,29 @@ class SpaceGame(BaseModel):
         self.cargo = resource
         self.message = f"your ship loaded {self.cargo}"
 
-    def get_commands(self) -> Generator[Command, Any, Any]:
+    def get_commands(self) -> list[Command]:
         """
         Returns available commands at a given moment during the game.
         """
-        for location in self.location.connected_locs:
-            yield MoveCommand(game=self, target=location)
+        commands = []
+        # move
+        for loc in self.location.connected_locs:
+            transition = (self.location.type, loc.type)
+            prefix = TRANSITIONS.get(transition, "move to")
+            move = Command(name=f"{prefix} {loc.name}", callback=partial(self.move_to, loc))
+            commands.append(move)
+
+        # load goods
         for resource in self.location.resources:
-            yield LoadCargoCommand(game=self, resource=resource)
-        if self.location.active and self.location.trigger.action_name:
-            yield Command(
-                name=self.location.trigger.action_name,
-                callback=partial(self.location.contact, self),
+            load = Command(
+                name=f"{TEXT['collect']} {TEXT[resource]}",
+                callback=partial(self.load_cargo, resource),
             )
+            commands.append(load)
 
+        # talk to people
+        if self.location.active and self.location.trigger.action_name:
+            contact = Command(name=self.location.trigger.action_name, callback=partial(self.location.contact, self))
+            commands.append(contact)
 
-class MoveCommand(Command):
-
-    def __init__(self, game: SpaceGame, target: Location):
-        source = game.location
-        transition = (source.type, target.type)
-        prefix = TRANSITIONS.get(transition, "move to")
-        super().__init__(
-            name=f"{prefix} {target.name}",
-            callback=partial(game.move_to, target),
-        )
-
-
-class LoadCargoCommand(Command):
-
-    def __init__(self, game: SpaceGame, resource: str):
-        # TODO: introduce Literal type for resources
-        super().__init__(
-            name=f"{TEXT['collect']} {TEXT[resource]}",
-            callback=partial(game.load_cargo, resource),
-        )
+        return commands

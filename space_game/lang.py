@@ -1,6 +1,5 @@
 from space_game.config import LANG
 
-
 DE = {
     "cargo bay": "Frachtraum",
     "artifacts": "Artefakte",
@@ -13,8 +12,6 @@ DE = {
     "back to orbit of": "hochbeamen zu",
     "ore": "Erze",
     "gas": "Gas",
-    "fish": "Fisch",
-    "fuel": "Treibstoff",
     "food": "Nahrung",
     "lava": "Lava",
     "notebook": "Notebook",

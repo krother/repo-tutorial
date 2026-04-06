@@ -4,16 +4,16 @@ Space Traveller - graphical user interface
 
 import os
 import time
+from typing import Any
 
 import arcade
+from arcade import load_texture
 from arcade import key as akeys
 from arcade.key import ESCAPE
 
+from space_game.facade import start_game, execute_command
+from space_game.lang import TEXT
 from space_game.config import BASE_PATH
-from space_game.galaxy import GalaxyGraph
-from space_game.game import SpaceGame
-from space_game.lang import LANG, TEXT
-from space_game.views import FONT_SETTINGS, IMAGES, SLOW_MOTION, print_message
 
 
 SIZEX, SIZEY = (1500, 1000)
@@ -39,23 +39,55 @@ MOVES = {
     akeys.KEY_9: 9,
 }
 
+IMAGE_PATH = os.path.join(BASE_PATH, "../static/images")
 
-def start_new_game():
-    galaxy = GalaxyGraph.create_galaxy(
-        os.path.join(BASE_PATH, f"galaxy_{LANG}.json")
+FONT_SETTINGS = {
+    "color": arcade.color.GREEN,
+    "font_size": 20,
+    "font_name": "GARA",
+    "anchor_y": "top",
+}
+
+SKIP_INPUT = False
+SLOW_MOTION = False
+
+
+def load_images(path, image_dict: dict[str, Any]):
+    """adds the png file in <path> to <image_dict>"""
+    for fn in os.listdir(path):
+        if fn.endswith(".png"):
+            name = fn[:-4]
+            fn = os.path.join(path, fn)
+            image_dict[name] = load_texture(fn)
+
+
+def print_message(msg):
+    arcade.draw_text(
+        text=msg,
+        x=300,
+        y=220,
+        width=800,
+        multiline=True,
+        color=arcade.color.LIGHT_CRIMSON,  # ALIZARIN_CRIMSON,
+        font_size=20,
+        font_name="GARA",
     )
-    game = SpaceGame(location=galaxy["Pandalor"])
-    return game
+
+
+# read image files
+IMAGES: dict[str, Any] = {}
+load_images(os.path.join(IMAGE_PATH, "planets"), IMAGES)
+load_images(os.path.join(IMAGE_PATH, "goods"), IMAGES)
+load_images(os.path.join(IMAGE_PATH, "characters"), IMAGES)
 
 
 class SpaceGameWindow(arcade.Window):
-    
+
     def __init__(self, no_window=False):
         if not no_window:
             super().__init__(SIZEX, SIZEY, "Space")
             arcade.set_background_color(arcade.color.BLACK)
-        self.game = start_new_game()
-        self.commands = list(self.game.get_commands())
+        self.game = start_game()
         self._keylog = ""
 
     def on_draw(self):
@@ -73,8 +105,8 @@ class SpaceGameWindow(arcade.Window):
 
     def draw_commands(self):
         commands = TEXT["Available commands"] + ":\n\n"
-        for i, cmd in enumerate(self.commands, 1):
-            commands += f"[{i}] {cmd.name}\n"
+        for i, cmd in enumerate(self.game.commands, 1):
+            commands += f"[{i}] {cmd}\n"
         commands += "\n[Esc] Exit"
         arcade.draw_text(
             text=commands,
@@ -83,6 +115,25 @@ class SpaceGameWindow(arcade.Window):
             width=600,
             multiline=True,
             **FONT_SETTINGS,
+        )
+
+    def draw_location(self) -> None:
+        arcade.draw_texture_rect(IMAGES[self.game.location.image],
+                                 arcade.XYWH(150, 850, 200, 200))
+        arcade.draw_text(
+            text=self.game.location.name,
+            x=300,
+            y=950,
+            bold=True,
+            **FONT_SETTINGS,  # type: ignore
+        )
+        arcade.draw_text(
+            text=self.game.location.description,
+            x=300,
+            y=900,
+            multiline=True,
+            width=600,
+            **FONT_SETTINGS,  # type: ignore
         )
 
     def draw_game(self) -> None:
@@ -105,33 +156,13 @@ class SpaceGameWindow(arcade.Window):
         for i, c in enumerate(self.game.crew):
             arcade.draw_texture_rect(IMAGES[c], arcade.XYWH(870 + i * 120, 320, 96, 96))
 
-    def draw_location(self) -> None:
-        arcade.draw_texture_rect(IMAGES[self.game.location.image],
-                                 arcade.XYWH(150, 850, 200, 200))
-        arcade.draw_text(
-            text=self.game.location.name,
-            x=300,
-            y=950,
-            bold=True,
-            **FONT_SETTINGS,  # type: ignore
-        )
-        arcade.draw_text(
-            text=self.game.location.description,
-            x=300,
-            y=900,
-            multiline=True,
-            width=600,
-            **FONT_SETTINGS,  # type: ignore
-        )
-
     def move(self, key):
         """Processes a key pressed"""
-        for i, cmd in enumerate(self.commands, 1):
+        for i, cmd in enumerate(self.game.commands, 1):
             if key == i:
                 if SLOW_MOTION:
                     time.sleep(3)
-                cmd.execute()
-                self.commands = list(self.game.get_commands())
+                self.game = execute_command(self.game.game_id, cmd)
 
     def on_key_press(self, symbol, modifiers):
         """Handle player movement"""

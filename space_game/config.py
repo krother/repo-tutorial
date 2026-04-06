@@ -1,8 +1,10 @@
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 
+BASE_PATH = Path(__file__).parent
+load_dotenv(dotenv_path=BASE_PATH.parent / ".env", override=True, verbose=True)
 
-LANG = "EN"
-if os.getenv("LANG", "EN").upper().startswith("DE"):
-    LANG = "DE"
+DATA_PATH = BASE_PATH.parent / "data"
 
-BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+LANG = os.getenv("LANG")

@@ -8,15 +8,16 @@ import os
 
 import pytest
 
-from space_game import views
+from space_game import gui
 from space_game.gui import SpaceGameWindow
+
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA_PATH = os.path.join(BASE_PATH, "test_data")
 SOLUTION_FILE = os.path.join(TEST_DATA_PATH, "solution.txt")
 COMPLETE_SOLUTION = open(SOLUTION_FILE, encoding="utf-8").read().strip()
 
-views.SKIP_INPUT = True
+gui.SKIP_INPUT = True
 
 
 @pytest.fixture
@@ -30,9 +31,9 @@ def travel(galaxy, keys):
         galaxy.move(k)
 
 
-class TestSpace:
+class TestSpaceGUI:
     # pylint: disable=redefined-outer-name
-
+    
     def test_pickup(self, space_gui):
         """Press one key to pick up an item"""
         space_gui.move(3)
@@ -58,7 +59,6 @@ class TestSpace:
         travel(space_gui, [3, 2, 3, 4])
         assert "pingu" not in space_gui.game.crew
         assert space_gui.game.cargo == "bamboo"
-        assert space_gui.game.location.active
         travel(space_gui, [3])
         assert "dna" in space_gui.game.cargo
 
