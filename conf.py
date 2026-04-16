@@ -24,7 +24,8 @@ extensions = [
     'sphinxcontrib.mermaid',
     ]
 
-exclude_patterns = ['.venv', '_build', 'Thumbs.db', 'learning_goals.md', 'README.md']
+exclude_patterns = ['.venv', '_build', 'Thumbs.db', 'learning_goals.md',
+                    'README.md', 'space_project/*', '.pytest_cache']
 
 language = 'en'
 

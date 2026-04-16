@@ -4,8 +4,6 @@
 
 This is a small space traveling adventure. Warp between planets, recruit characters, trade goods, solve puzzles.
 
-* see the [Refactoring Tutorial](refactoring.md)
-
 
 ## Installation
 
