@@ -12,7 +12,34 @@ You will need the folder ``space_project/`` . It should contain the following fi
 
 .. code::
 
-    TODO: tree
+    space_project
+    ├── data
+    │   ├── galaxy_DE.json
+    │   ├── galaxy_EN.json
+    │   └── magrathea.json
+    ├── space_game
+    │   ├── app.py
+    │   ├── cli.py
+    │   ├── config.py
+    │   ├── dto.py
+    │   ├── facade.py
+    │   ├── game.py
+    │   ├── gui.py
+    │   ├── lang.py
+    │   ├── location.py
+    │   ├── __main__.py
+    │   ├── middleware.py
+    ├── static/
+    ├── templates/
+    ├── tests
+    │   ├── test_cli.py
+    │   ├── test_data/
+    │   ├── test_facade.py
+    │   └── test_gui.py
+    ├── pyproject.toml
+    ├── README.md
+    └── uv.lock
+
 
 Install Libraries
 -----------------
