@@ -1,14 +1,14 @@
-from typing import Any, Optional
+"""
+Web frontend for the Pandas go to Space game.
 
+The FastAPI app uses a middleware that translates JSON responses
+into HTML pages - so you only need to deliver JSON.
+"""
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
 from space_game.middleware import PreserveJSONResponse, json_to_html
 
-# libs for testing
-from faker import Faker
-
-from space_game.facade import start_game, execute_command, GameData
+from space_game.facade import GameData
 
 app = FastAPI(default_response_class=PreserveJSONResponse)
 
@@ -20,12 +20,12 @@ app.middleware("http")(json_to_html)
 
 @app.get("/new_game", response_model=GameData)
 def new_game() -> GameData:
-    return start_game()
+    ...
 
 
 @app.get("/action/{game_id}/{command}", response_model=GameData)
 def action(game_id: str, command: str) -> GameData:
-    return execute_command(game_id, command)
+    ...
 
 
 # Also let FastAPI serve the HTMX "frontend" of our application.

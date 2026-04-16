@@ -1,3 +1,10 @@
+"""
+Domain objects: SpaceGame and commands
+
+The SpaceGame class represents an entire game.
+At any point, a game can produce a list of commands (available actions)
+"""
+
 from functools import partial
 from typing import Callable, Literal
 

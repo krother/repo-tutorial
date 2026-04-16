@@ -1,5 +1,5 @@
 """
-Space Traveller - graphical user interface
+terminal interface
 """
 
 import sys

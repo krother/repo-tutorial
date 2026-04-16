@@ -1,3 +1,6 @@
+"""
+A service-level module that serves the main use case: plaing the game.
+"""
 import os
 
 from space_game.lang import LANG
@@ -5,6 +8,7 @@ from space_game.location import create_galaxy
 from space_game.game import SpaceGame
 from space_game.config import DATA_PATH
 from space_game.dto import GameData, LocationData
+
 
 GAMES = {}  # TODO: move this to a database asap
 

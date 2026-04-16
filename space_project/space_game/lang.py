@@ -1,3 +1,6 @@
+"""
+translations - not used in the tutorial
+"""
 from space_game.config import LANG
 
 DE = {

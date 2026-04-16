@@ -1,5 +1,5 @@
 """
-Space Traveller - graphical user interface
+graphical user interface using arcade
 """
 
 import os
