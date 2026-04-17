@@ -29,10 +29,6 @@ This is an example of the **Dependency Inversion Principle** (although I do not 
 We put the domain model in the center to keep it clean. We group all other code that handles the messy real-world details around it (such as API endpoints, file paths and SQL queries).
 Thus, the Repository Pattern is an example of good program design.
 
-TODO:
-DEPENDENCY GRAPH
-DTO vs ENTITY
-
 .. note::
 
    You may have heard the term **hexagonal architecture**. It means more or less the same thing, but we will not analyze the word in detail.
@@ -87,7 +83,7 @@ Create the following interface in ``repository.py``. Leave the function bodies e
 Exercise 4: Test-Driven-Development
 -----------------------------------
 
-Copy tests in :download:``test_repository.py`` to the ``tests/`` folder.
+Copy tests in :download:`test_repository.py` to the ``tests/`` folder.
 Let's run the tests:
 
 .. code::

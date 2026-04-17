@@ -45,27 +45,14 @@ Configure the ``MONGODB_DATABASE`` variable in the ``.env`` file.
 Exercise 3: Implement functions
 -------------------------------
 
-Fortunately, ``pydantic`` objects and JSON objects in MongoDB translate into each other well. Here is some example code to persist repository functions with MongoDB:
+Fortunately, ``pydantic`` objects and JSON objects in MongoDB translate into each other well. Here is some code to persist repository functions with MongoDB.
 
-.. code:: python3
+**Unfortunately, the code is buggy. Fix the bugs.**
 
-   def create_game(location: str, get_location: Callable) -> SpaceGame:
-       game = ...
-       j = game.model_dump()
-       db.games.insert_one(j)
-       
-   
-   def get_game(game_id) -> SpaceGame:
-       result = db.games.find_one({"game_id": game_id})
-       return SpaceGame(**result)
-   
-
-   def update_game(game_id: str, game: SpaceGame) -> None:
-       j = game.model_dump()
-       db.games.update_one({"game_id": game_id}, {"$set": j})
+.. literalinclude:: repository_mongodb.py
 
 
-Add the according functions for the locations and make the tests pass.
+Make the tests pass.
 
 
 Exercise 4: Inspect the database
