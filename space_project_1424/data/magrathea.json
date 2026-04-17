@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Magrathea",
+    "description": "once home of world builders, now a sad ruin",
+    "image": "magrathea.png",
+    "type": "png",
+    "connected_names": ["earth"],
+    "trigger": {}
+}
+]
